@@ -38,8 +38,6 @@ const icons = {
     IconQuestionMark,
     IconFolder,
     IconBooks
-
-
 };
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.dark,
@@ -81,8 +79,6 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const EarningCard = ({ isLoading, isCount ,isTitle}) => {
     const theme = useTheme();
-
-    
 
     return (
         <>

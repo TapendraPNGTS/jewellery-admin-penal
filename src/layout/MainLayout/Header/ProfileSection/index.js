@@ -1,262 +1,248 @@
-import { useState, useRef, useEffect } from 'react';
-
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
-
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from "@mui/material/styles";
 import {
-    Avatar,
-    Box,
-    Card,
-    CardContent,
-    Chip,
-    ClickAwayListener,
-    Divider,
-    Grid,
-    InputAdornment,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    OutlinedInput,
-    Paper,
-    Popper,
-    Stack,
-    Switch,
-    Typography,
-    avatarClasses,
-} from '@mui/material';
+  Avatar,
+  Box,
+  Chip,
+  ClickAwayListener,
+  Divider,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Popper,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 // third-party
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 // project imports
-import MainCard from 'ui-component/cards/MainCard';
-import Transitions from 'ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
-import User1 from 'assets/images/users/user-round.svg';
+import MainCard from "ui-component/cards/MainCard";
+import Transitions from "ui-component/extended/Transitions";
+import UserApi from "apis/user.api";
+import { useAuthenticated } from "hooks/useAuthenticated.hook";
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
-
+import { IconLogout, IconSettings } from "@tabler/icons";
+import { logout } from "utils/common.util";
+import { toast } from "react-hot-toast";
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
-    const theme = useTheme();
-    const customization = useSelector((state) => state.customization);
-    const navigate = useNavigate();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState("");
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [open, setOpen] = useState(false);
-    /**
-     * anchorRef is used on different componets and specifying one type leads to other components throwing an error
-     * */
-    const anchorRef = useRef(null);
+  const theme = useTheme();
+  const userApi = new UserApi();
+  const customization = useSelector((state) => state.customization);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const userId = useSelector((state) => state.user.v_user_info.userId);
+  /**
+   * anchorRef is used on different componets and specifying one type leads to other components throwing an error
+   * */
+  const anchorRef = useRef(null);
 
-    const handleLogout = async () => {
-        localStorage.clear()
-        navigate('/')
-    };
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+    setOpen(false);
+  };
 
-    const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return;
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const prevOpen = useRef(open);
+  useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
+    prevOpen.current = open;
+  }, [open]);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const isAuth = useAuthenticated();
+
+  const getUserById = useCallback(async () => {
+    try {
+      if (!isAuth) {
+        navigate("/");
+      } else {
+        const userData = await userApi.getUserById({ userId });
+        if (!userData || !userData.data.data) {
+          return toast.error("No Data  available");
+        } else {
+          setName(userData.data.data.name);
+          setEmail(userData.data.data.email);
+          return;
         }
-        setOpen(false);
-    };
-
-    const handleListItemClick = (event, index, route = '') => {
-        setSelectedIndex(index);
-        handleClose(event);
-
-        if (route && route !== '') {
-            navigate(route);
-        }
-    };
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
-    };
-
-    const prevOpen = useRef(open);
-    useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current.focus();
-        }
-
-        prevOpen.current = open;
-    }, [open]);
-
-    function getUserProfile() {
-        var myHeaders = new Headers();
-        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append("token", localStorage.getItem("token"));
-        myHeaders.append("Content-Type", "application/json");
-    
-        var raw = JSON.stringify({
-            adminId: localStorage.getItem("userId"),
-        });
-    
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-    
-        fetch(`${process.env.REACT_APP_API_URL}staffDetail`, requestOptions)
-          .then((response) => response.json())
-          .then((result) => {
-            if (result.code == 200) {
-              setName(result.data.UserName);
-              setEmail(result.data.Email);
-            } else if (result.code == 201 && result.status == "accessDenied") {
-              localStorage.clear();
-              navigate("/");
-            }
-          })
-          .catch((error) => {});
       }
-      useEffect(() => {
-        getUserProfile();
-      }, []);
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
+  useEffect(() => {
+    getUserById();
+  }, []);
 
-    return (
-        <>
-            <Chip
-                sx={{
-                    height: '48px',
-                    alignItems: 'center',
-                    borderRadius: '27px',
-                    transition: 'all .2s ease-in-out',
-                    borderColor: theme.palette.primary.light,
-                    backgroundColor: theme.palette.primary.light,
-                    '&[aria-controls="menu-list-grow"], &:hover': {
-                        borderColor: theme.palette.primary.main,
-                        background: `${theme.palette.primary.main}!important`,
-                        color: theme.palette.primary.light,
-                        '& svg': {
-                            stroke: theme.palette.primary.light
-                        }
-                    },
-                    '& .MuiChip-label': {
-                        lineHeight: 0
-                    }
-                }}
-                icon={
-                    <Avatar
-                        // src={User1}
+  return (
+    <>
+      <Chip
+        sx={{
+          height: "48px",
+          alignItems: "center",
+          borderRadius: "27px",
+          transition: "all .2s ease-in-out",
+          borderColor: theme.palette.primary.light,
+          backgroundColor: theme.palette.primary.light,
+          '&[aria-controls="menu-list-grow"], &:hover': {
+            borderColor: theme.palette.primary.main,
+            background: `${theme.palette.primary.main}!important`,
+            color: theme.palette.primary.light,
+            "& svg": {
+              stroke: theme.palette.primary.light,
+            },
+          },
+          "& .MuiChip-label": {
+            lineHeight: 0,
+          },
+        }}
+        icon={
+          <Avatar
+            src={""}
+            sx={{
+              ...theme.typography.mediumAvatar,
+              margin: "8px 0 8px 8px !important",
+              cursor: "pointer",
+            }}
+            ref={anchorRef}
+            aria-controls={open ? "menu-list-grow" : undefined}
+            aria-haspopup="true"
+            color="inherit"
+          />
+        }
+        label={
+          <IconSettings
+            stroke={1.5}
+            size="1.5rem"
+            color={theme.palette.primary.main}
+          />
+        }
+        variant="outlined"
+        ref={anchorRef}
+        aria-controls={open ? "menu-list-grow" : undefined}
+        aria-haspopup="true"
+        onClick={handleToggle}
+        color="primary"
+      />
+      <Popper
+        placement="bottom-end"
+        open={open}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+        popperOptions={{
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [0, 14],
+              },
+            },
+          ],
+        }}
+      >
+        {({ TransitionProps }) => (
+          <Transitions in={open} {...TransitionProps}>
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MainCard
+                  border={false}
+                  elevation={16}
+                  content={false}
+                  boxShadow
+                  shadow={theme.shadows[16]}
+                >
+                  <Box sx={{ p: 2 }}>
+                    <Stack>
+                      <Stack direction="row" spacing={0.5} alignItems="center">
+                        <Typography variant="h4">Wellcome Back,</Typography>
+                        <Typography
+                          component="span"
+                          variant="h4"
+                          sx={{ fontWeight: 400 }}
+                        >
+                          {name}
+                        </Typography>
+                      </Stack>
+                      <Typography variant="subtitle2">
+                        Email :- {email}
+                      </Typography>
+                    </Stack>
+                    <Divider />
+                  </Box>
+                  <PerfectScrollbar
+                    style={{
+                      height: "100%",
+                      maxHeight: "calc(100vh - 250px)",
+                      overflowX: "hidden",
+                    }}
+                  >
+                    <Box sx={{ p: 2 }}>
+                      <List
+                        component="nav"
                         sx={{
-                            ...theme.typography.mediumAvatar,
-                            margin: '8px 0 8px 8px !important',
-                            cursor: 'pointer'
+                          width: "100%",
+                          maxWidth: 350,
+                          minWidth: 300,
+                          backgroundColor: theme.palette.background.paper,
+                          borderRadius: "10px",
+                          [theme.breakpoints.down("md")]: {
+                            minWidth: "100%",
+                          },
+                          "& .MuiListItemButton-root": {
+                            mt: 0.5,
+                          },
                         }}
-                        ref={anchorRef}
-                        aria-controls={open ? 'menu-list-grow' : undefined}
-                        aria-haspopup="true"
-                        color="inherit"
-                    />
-                }
-                label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
-                variant="outlined"
-                ref={anchorRef}
-                aria-controls={open ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                onClick={handleToggle}
-                color="primary"
-            />
-            <Popper
-                placement="bottom-end"
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                transition
-                disablePortal
-                popperOptions={{
-                    modifiers: [
-                        {
-                            name: 'offset',
-                            options: {
-                                offset: [0, 14]
+                      >
+                        <ListItemButton
+                          sx={{
+                            borderRadius: `${customization.borderRadius}px`,
+                          }}
+                          onClick={() => {
+                            logout(navigate);
+                          }}
+                        >
+                          <ListItemIcon>
+                            <IconLogout stroke={1.5} size="1.3rem" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2">Logout</Typography>
                             }
-                        }
-                    ]
-                }}
-            >
-                {({ TransitionProps }) => (
-                    <Transitions in={open} {...TransitionProps}>
-                        <Paper>
-                            <ClickAwayListener onClickAway={handleClose}>
-                                <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                                    <Box sx={{ p: 2 }}>
-                                        <Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="h4">Welcome Back,</Typography>
-                                                <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                                                   {name} 
-                                                </Typography>
-                                            </Stack>
-                                            <Typography component="span" variant="h4" className='mt-3' sx={{ fontWeight: 400 }}>{email}</Typography>
-                                        </Stack>
-                                      
-                                        {/* <Divider /> */}
-                                    </Box>
-                                    <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
-                                        <Box sx={{ p: 2 }}>
-                                           
-                                            <List
-                                                component="nav"
-                                                sx={{
-                                                    width: '100%',
-                                                    maxWidth: 350,
-                                                    minWidth: 300,
-                                                    backgroundColor: theme.palette.background.paper,
-                                                    borderRadius: '10px',
-                                                    [theme.breakpoints.down('md')]: {
-                                                        minWidth: '100%'
-                                                    },
-                                                    '& .MuiListItemButton-root': {
-                                                        mt: 0.5
-                                                    }
-                                                }}
-                                            >
-                                                {/* <ListItemButton
-                                                    sx={{ borderRadius: `${customization.borderRadius}px` }}
-                                                    selected={selectedIndex === 0}
-                                                    onClick={(event) => handleListItemClick(event, 0, '/user/account-profile/profile1')}
-                                                >
-                                                    <ListItemIcon>
-                                                        <IconSettings stroke={1.5} size="1.3rem" />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
-                                                </ListItemButton> */}
-                                               
-                                                <ListItemButton
-                                                    sx={{ borderRadius: `${customization.borderRadius}px` }}
-                                                    selected={selectedIndex === 4}
-                                                    onClick={handleLogout}
-                                                >
-                                                    <ListItemIcon>
-                                                        <IconLogout stroke={1.5} size="1.3rem" />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={<Typography variant="body2" 
-                                                  
-                                                    >Logout</Typography>} />
-                                                </ListItemButton>
-                                            </List>
-                                        </Box>
-                                    </PerfectScrollbar>
-                                </MainCard>
-                            </ClickAwayListener>
-                        </Paper>
-                    </Transitions>
-                )}
-            </Popper>
-        </>
-    );
+                          />
+                        </ListItemButton>
+                      </List>
+                    </Box>
+                  </PerfectScrollbar>
+                </MainCard>
+              </ClickAwayListener>
+            </Paper>
+          </Transitions>
+        )}
+      </Popper>
+    </>
+  );
 };
 
 export default ProfileSection;

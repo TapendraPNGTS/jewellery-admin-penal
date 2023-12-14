@@ -1,94 +1,121 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 // material-ui
-import { Grid } from '@mui/material';
+import { Grid } from "@mui/material";
 
 // project imports
-import EarningCard from './EarningCard';
-import { gridSpacing } from 'store/constant';
-
-// import Calendar from 'react-calendar';
+import EarningCard from "./EarningCard";
+// import BajajAreaChartCard from "./TotalGrowthBarChart";
+// import TotalVoteChart from "./TotalVoteChart";
+import { gridSpacing } from "store/constant";
+import DashboardApi from "apis/dashboard.api";
+import { toast } from "react-hot-toast";
 // ==============================|| DEFAULT DASHBOARD ||============================== //
+
 const Dashboard = () => {
-    const [isLoading, setLoading] = useState(true);
-    const [appoint, setAppoint] = useState(0);
-    const [user, setUser] = useState(0);
-    const [currentAmount, setCurrentAmount] = useState(0);
-    const [totalAmount, setTotalAmount] = useState(0);
-    const [allCurrentAppoiment, setAllCurrentAppoiment] = useState(0);
-    const [totalDue, setTotalDue] = useState(0);
-    const [currentDue, setCurrentDue] = useState(0);
+  const [isLoading, setLoading] = useState(true);
+  const dashboardApi = new DashboardApi();
 
-    function getalldata() {
-        var myHeaders = new Headers();
-        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append("token", localStorage.getItem("token"));
-        myHeaders.append("Content-Type", "application/json");
-        var raw = JSON.stringify({
-            adminId: localStorage.getItem("userId"),
-        });
-        var requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow",
-        };
-        fetch(`${process.env.REACT_APP_API_URL}Dashboard`, requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
-                setAllCurrentAppoiment(result.data.current_appoint);
-                setUser(result.data.user);
-                setAppoint(result.data.appoint);
-                setCurrentAmount(result.data.current_amount);
-                setTotalAmount(result.data.total_amount);
-                setTotalDue(result.data.total_due);
-                setCurrentDue(result.data.current_due);
+  const [volunteer, setVolunteer] = useState(0);
+  const [booth, setBooth] = useState(0);
+  const [voter, setVoter] = useState(0);
+  const [news, setNews] = useState(0);
+  const [task, setTask] = useState(0);
+  const [post, setPost] = useState(0);
+  const [data, setData] = useState([]);
+  const [voterView, setVoterView] = useState([]);
 
-            })
-            .catch((error) => console.log("error", error));
-    }
+  const getDashboard = useCallback(async () => {
+    try {
+      const dashboardData = await dashboardApi.getDashboard();
 
-    useEffect(() => {
-        getalldata()
+      if (!dashboardData || !dashboardData.data.data) {
+        return toast.error("No Data  available");
+      } else {
+        setVolunteer(dashboardData.data.data.volunteer);
+        setBooth(dashboardData.data.data.booth);
+        setVoter(dashboardData.data.data.voter.allVoter);
+        setNews(dashboardData.data.data?.news);
+        setTask(dashboardData.data.data?.task);
+        setPost(dashboardData.data.data?.post);
+        setData([
+          dashboardData.data.data.percentages.percentageMen,
+          dashboardData.data.data.percentages.percentageWomen,
+        ]);
+        setVoterView(dashboardData.data.data.voterView);
         setLoading(false);
-    }, []);
 
-    return (
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
+  useEffect(() => {
+    getDashboard();
+  }, []);
+
+  return (
+    <Grid container spacing={gridSpacing}>
+      <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={user} isTitle={`Total User`} />
-                    </Grid>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={appoint} isTitle={`All Products`} />
-                    </Grid>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={appoint} isTitle={`Labgrown Products`} />
-                    </Grid>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={appoint} isTitle={`Natural Products`} />
-                    </Grid>
-                    <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={allCurrentAppoiment} isTitle={`Total Settings`} />
-                    </Grid>
-                    {/* <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={currentAmount} isTitle={`Current Amount ₹`} />
-                    </Grid> */}
-                    {/* <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={totalAmount} isTitle={`Total Amount ₹`} />
-                    </Grid> */}
-                    {/* <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={totalDue} isTitle={`Total Due Amount ₹`} />
-                    </Grid> */}
-                    {/* <Grid item lg={4} md={6} sm={6} xs={12}>
-                        <EarningCard isLoading={isLoading} isCount={currentDue} isTitle={`Current Due Amount ₹`} />
-                    </Grid> */}
-                </Grid>
-            </Grid>
+          <Grid item lg={4} md={6} sm={6} xs={12}>
+            <EarningCard
+              isLoading={isLoading}
+              isCount={volunteer}
+              isTitle={`Total Volunter`}
+            />
+          </Grid>
+          <Grid item lg={4} md={6} sm={6} xs={12}>
+            <EarningCard
+              isLoading={isLoading}
+              isCount={booth}
+              isTitle={`Total booth`}
+            />
+          </Grid>
+          <Grid item lg={4} md={6} sm={6} xs={12}>
+            <EarningCard
+              isLoading={isLoading}
+              isCount={voter}
+              isTitle={`Total Voters`}
+            />
+          </Grid>
 
+          <Grid item lg={4} md={6} sm={6} xs={12}>
+            <EarningCard
+              isLoading={isLoading}
+              isCount={news}
+              isTitle={`Total News`}
+            />
+          </Grid>
+          <Grid item lg={4} md={6} sm={6} xs={12}>
+            <EarningCard
+              isLoading={isLoading}
+              isCount={task}
+              isTitle={`Total Task`}
+            />
+          </Grid>
+          <Grid item lg={4} md={6} sm={6} xs={12}>
+            <EarningCard
+              isLoading={isLoading}
+              isCount={post}
+              isTitle={`Total Post`}
+            />
+          </Grid>
+
+          <Grid item lg={6} md={6} sm={12} xs={12}>
+            {/* <BajajAreaChartCard isLoading={isLoading} isData={voterView} /> */}
+          </Grid>
+          <Grid item lg={6} md={6} sm={12} xs={12}>
+            {/* <TotalVoteChart isData={data} /> */}
+          </Grid>
         </Grid>
-    );
+      </Grid>
+    </Grid>
+  );
 };
 
 export default Dashboard;

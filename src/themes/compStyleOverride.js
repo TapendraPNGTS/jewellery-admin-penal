@@ -123,7 +123,7 @@ export default function componentStyleOverrides(theme) {
                         padding: '10px 14px',
                         '&.MuiInputBase-inputAdornedStart': {
                             paddingLeft: 0
-                        } 
+                        }
                     }
                 },
                 inputAdornedStart: {

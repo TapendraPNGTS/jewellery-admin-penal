@@ -102,7 +102,7 @@ const Typography = () => (
                                 overline text
                             </MuiTypography>
                         </Grid>
-                        {/* <Grid item>
+                        <Grid item>
                             <MuiTypography
                                 variant="body2"
                                 color="primary"
@@ -115,7 +115,7 @@ const Typography = () => (
                             >
                                 https://berrydashboard.io
                             </MuiTypography>
-                        </Grid> */}
+                        </Grid>
                     </Grid>
                 </SubCard>
             </Grid>

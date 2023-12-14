@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
+
 // material-ui
 import { Box, Card, Grid } from '@mui/material';
+
 // project imports
 import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';

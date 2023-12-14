@@ -1,15 +1,23 @@
 // assets
 import {
-  IconReport,
-  IconCalendarStats,
-  IconUserPlus
+  IconArticle,
+  IconMap2,
+  IconBrandBlogger,
+  IconListNumbers,
+  IconUsers,
+  IconChecklist,
+  IconHandFinger,
 } from "@tabler/icons";
 
 // constant
 const icons = {
-  IconReport,
-  IconCalendarStats,
-  IconUserPlus
+  IconMap2,
+  IconArticle,
+  IconBrandBlogger,
+  IconListNumbers,
+  IconUsers,
+  IconChecklist,
+  IconHandFinger,
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -20,57 +28,63 @@ const utilities = {
   type: "group",
   children: [
     {
-      id: "patient",
-      title: "Patient",
-      type: "item",
-      url: "/patient-list",
-      icon: icons.IconUserPlus,
-    },
-    {
-      id: "allDaimond",
-      title: "All Daimond",
+      id: "users",
+      title: "User",
+      icon: icons.IconUsers,
       type: "collapse",
-      icon: icons.IconReport,
       children: [
         {
-          id: "AddDaimond",
-          title: "Add Daimond",
+          id: "user-list",
+          title: "User List",
           type: "item",
-          url: "/TodayAppointment",
+          url: "/user",
+          breadcrumbs: true,
         },
         {
-          id: "pendingAppointment",
-          title: "Pending",
+          id: "add-user",
+          title: "Add User",
           type: "item",
-          url: "/PendingAppointment",
-        },
-        {
-          id: "completedAppointment",
-          title: "Completed",
-          type: "item",
-          url: "/CompletedAppointment",
-        },
-        {
-          id: "cancelAppointment",
-          title: "Cancel",
-          type: "item",
-          url: "/CancelAppointment",
-        },
-        {
-          id: "appointment",
-          title: "All",
-          type: "item",
-          url: "/appointment",
+          url: "/add-user",
+          breadcrumbs: true,
         },
       ],
     },
-    
+
     {
-      id: "Calender",
-      title: "Calender",
-      type: "item",
-      url: "/AppointmentCalendar",
-      icon: icons.IconCalendarStats,
+      id: "users",
+      title: "Daimonds",
+      icon: icons.IconUsers,
+      type: "collapse",
+      children: [
+        {
+          id: "user-list",
+          title: "All Daimonds",
+          type: "item",
+          url: "/user",
+          breadcrumbs: true,
+        },
+        {
+          id: "add-user",
+          title: "Add Daimond",
+          type: "item",
+          url: "/add-user",
+          breadcrumbs: true,
+        },
+        {
+          id: "add-user",
+          title: "Edit Daimond",
+          type: "item",
+          url: "/add-user",
+          breadcrumbs: true,
+        },
+        {
+          id: "add-user",
+          title: "Remove Daimond",
+          type: "item",
+          url: "/add-user",
+          breadcrumbs: true,
+        },
+      ],
     },
   ],
 };
