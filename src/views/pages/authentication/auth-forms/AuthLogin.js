@@ -75,24 +75,16 @@ const FirebaseLogin = ({ ...others }) => {
           onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
             try {
               console.log('trySubmit');
-              // const loginResponse = await authApi.login({
-              //   email: values.email,
-              //   password: values.password,
-              //   type: "Admin",
-              // });
-              // console.log(loginResponse);
-
-
               if (scriptedRef.current) {
                 const loginResponse = await authApi.login({
                   email: values.email,
                   password: values.password,
-                  type: "Admin",
+                  // type: "Admin",
                 });
                 console.log(loginResponse);
                 if (loginResponse && loginResponse?.data?.code === 200) {
                   dispatch(updateToken(loginResponse.data.data.token));
-                  dispatch(updateUser(loginResponse.data.data.user));
+                  dispatch(updateUser(loginResponse.data.data.userId));
                   toast.success(`Login successsfully`);
                   navigate("/dashboard", { replace: true });
                 } else {

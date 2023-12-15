@@ -28,7 +28,6 @@ const Dashboard = () => {
   const getDashboard = useCallback(async () => {
     try {
       const dashboardData = await dashboardApi.getDashboard();
-
       if (!dashboardData || !dashboardData.data.data) {
         return toast.error("No Data  available");
       } else {

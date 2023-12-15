@@ -34,6 +34,8 @@ export default function Users() {
   const userApi = new UserApi();
 
   const rows = useSelector((state) => state.user.User);
+  const authToken = useSelector((state) => state.user.x_auth_token);
+  // console.log('Auth token', authToken);
   const [search, setSearch] = React.useState("");
 
   const [page, setPage] = React.useState(0);
@@ -47,25 +49,26 @@ export default function Users() {
     setPage(0);
   };
 
-  const handleDelete = async (userId) => {
-    try {
-      const deleteUserResponse = await userApi.deleteUser({ userId });
-      if (deleteUserResponse && deleteUserResponse?.data?.code === 200) {
-        getAllUser();
-        return toast.success("Deleted Successfully");
-      } else {
-        return toast.error(deleteUserResponse.data?.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong");
-      throw error;
-    }
-  };
+  // const handleDelete = async (userId) => {
+  //   try {
+  //     const deleteUserResponse = await userApi.deleteUser({ userId });
+  //     if (deleteUserResponse && deleteUserResponse?.data?.code === 200) {
+  //       getAllUser();
+  //       return toast.success("Deleted Successfully");
+  //     } else {
+  //       return toast.error(deleteUserResponse.data?.message);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Something went wrong");
+  //     throw error;
+  //   }
+  // };
 
+  console.log("authToken", authToken);
   const getAllUser = useCallback(async () => {
     try {
-      const users = await userApi.getAllUser();
+      const users = await userApi.getAllUser({authToken});
       if (!users || !users.data.data) {
         return toast.error("no latest users available");
       } else {
@@ -124,11 +127,10 @@ export default function Users() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>S No.</TableCell>
-                      <TableCell>Date Time</TableCell>
-                      <TableCell>Name</TableCell>
+                      {/* <TableCell>User Id</TableCell> */}
+                      <TableCell>First Name</TableCell>
+                      <TableCell>Last Name</TableCell>
                       <TableCell>Email</TableCell>
-                      <TableCell>Contact</TableCell>
-                      <TableCell>Type</TableCell>
                       <TableCell>Action</TableCell>
                     </TableRow>
                   </TableHead>
@@ -152,14 +154,10 @@ export default function Users() {
                             key={index}
                           >
                             <TableCell align="start">{index + 1}</TableCell>
-
-                            <TableCell align="start">
-                              {row.createdAt ? formatDate(row.createdAt) : "-"}
-                            </TableCell>
-                            <TableCell align="start">{row.name}</TableCell>
+                            {/* <TableCell align="start">{row.userId}</TableCell> */}
+                            <TableCell align="start">{row.firstName}</TableCell>
+                            <TableCell align="start">{row.lastName}</TableCell>
                             <TableCell align="start">{row.email}</TableCell>
-                            <TableCell align="start">{row.number}</TableCell>
-                            <TableCell align="start">{row.type}</TableCell>
                             <TableCell>
                               <Link to={`/edit-user/${row.userId}`}>
                                 <IconButton
@@ -170,7 +168,7 @@ export default function Users() {
                                   <EditIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
-                              <IconButton
+                              {/* <IconButton
                                 onClick={(e) => {
                                   handleDelete(row.userId);
                                 }}
@@ -179,7 +177,7 @@ export default function Users() {
                                 size="large"
                               >
                                 <DeleteIcon sx={{ fontSize: "1.1rem" }} />
-                              </IconButton>
+                              </IconButton> */}
                             </TableCell>
                           </TableRow>
                         );

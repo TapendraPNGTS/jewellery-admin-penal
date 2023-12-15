@@ -40,7 +40,7 @@ const ProfileSection = () => {
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const userId = useSelector((state) => state.user.v_user_info.userId);
+  const userId = useSelector((state) => state.user.v_user_info.staffId);
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
