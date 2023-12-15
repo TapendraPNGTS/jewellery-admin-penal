@@ -9,19 +9,19 @@ export const HttpMethod = {
 const ApiRoutes = {
   Dashboard: {
     Data: {
-      Endpoint: "/auth/dashboard",
+      Endpoint: "dashboard",
       Method: HttpMethod.Post,
     },
   },
   Auth: {
     Login: {
-      Endpoint: "/auth/adminLogin",
+      Endpoint: "adminLogin",
       Method: HttpMethod.Post,
     },
   },
   User: {
     All: {
-      Endpoint: "user/getAllUser",
+      Endpoint: "getAllUser",
       Method: HttpMethod.Post,
     },
     UserById: {

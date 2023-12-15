@@ -64,19 +64,28 @@ const FirebaseLogin = ({ ...others }) => {
       <>
         <Formik
           initialValues={{
-            number: "",
+            email: "",
             password: "",
             submit: null,
           }}
           validationSchema={Yup.object().shape({
-            number: Yup.string().max(10).required("Email is required"),
+            email: Yup.string().max(255).required("Email is required"),
             password: Yup.string().max(255).required("Password is required"),
           })}
           onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
             try {
+              console.log('trySubmit');
+              // const loginResponse = await authApi.login({
+              //   email: values.email,
+              //   password: values.password,
+              //   type: "Admin",
+              // });
+              // console.log(loginResponse);
+
+
               if (scriptedRef.current) {
                 const loginResponse = await authApi.login({
-                  number: values.number,
+                  email: values.email,
                   password: values.password,
                   type: "Admin",
                 });
@@ -114,28 +123,28 @@ const FirebaseLogin = ({ ...others }) => {
             <form noValidate onSubmit={handleSubmit} {...others}>
               <FormControl
                 fullWidth
-                error={Boolean(touched.number && errors.number)}
+                error={Boolean(touched.email && errors.email)}
                 sx={{ ...theme.typography.customInput }}
               >
                 <InputLabel htmlFor="outlined-adornment-email-login">
-                  Mail Id
+                  Email
                 </InputLabel>
                 <OutlinedInput
                   id="outlined-adornment-email-login"
-                  type="text"
-                  value={values.number}
-                  name="number"
+                  type="email"
+                  value={values.email}
+                  name="email"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  label="Contact Number"
+                  label="User Email"
                   inputProps={{}}
                 />
-                {touched.number && errors.number && (
+                {touched.email && errors.email && (
                   <FormHelperText
                     error
                     id="standard-weight-helper-text-email-login"
                   >
-                    {errors.number}
+                    {errors.email}
                   </FormHelperText>
                 )}
               </FormControl>
