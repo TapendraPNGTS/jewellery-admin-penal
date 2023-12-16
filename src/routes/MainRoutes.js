@@ -4,6 +4,8 @@ import MainLayout from "layout/MainLayout";
 import Loadable from "ui-component/Loadable";
 // dashboard routing
 const Dashboard = Loadable(lazy(() => import("views/dashboard/Default")));
+const Markups = Loadable(lazy(() => import("views/utilities/MarkupPrice/markups")));
+const ShopTiming = Loadable(lazy(() => import("views/utilities/TimingShop/shop-timing")));
 
 //User Route
 const User = Loadable(lazy(() => import("views/utilities/users/user")));
@@ -39,6 +41,15 @@ const MainRoutes = {
         },
       ],
     },
+    
+        {
+          path: "add-markups",
+          element: <Markups />,
+        },        
+        {
+          path: "shop-timings",
+          element: <ShopTiming />,
+        },        
   ],
 };
 
