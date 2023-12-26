@@ -30,21 +30,39 @@ class User extends HttpClient {
     );
   };
 
-  AllUserConfig = ApiRoutes.User.All;
-  UserByIdConfig = ApiRoutes.User.UserById;
+  AllLabgrownConfig = ApiRoutes.Daimonds.AllLabgrown;
+  AllNaturalConfig = ApiRoutes.Daimonds.AllNatural;
+  DaimondByIDLabGrownConfig = ApiRoutes.Daimonds.DaimondByIDLabGrown;
+  DaimondByIDNaturalConfig = ApiRoutes.Daimonds.DaimondByIDNatural;
 
-  getAllUser = async () => {
+  getAllLabgrown = async (data) => {
     return this.instance({
-      method: this.AllUserConfig.Method,
-      url: this.AllUserConfig.Endpoint,
+      method: this.AllLabgrownConfig.Method,
+      url: this.AllLabgrownConfig.Endpoint,
       headers: {},
-      data: null,
+      data: data,
     });
   };
-  getUserById = async (data) => {
+  getAllNatural = async (data) => {
     return this.instance({
-      method: this.UserByIdConfig.Method,
-      url: this.UserByIdConfig.Endpoint,
+      method: this.AllNaturalConfig.Method,
+      url: this.AllNaturalConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getNaturalById = async (data) => {
+    return this.instance({
+      method: this.DaimondByIDNaturalConfig.Method,
+      url: this.DaimondByIDNaturalConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getLabgrownById = async (data) => {
+    return this.instance({
+      method: this.DaimondByIDLabGrownConfig.Method,
+      url: this.DaimondByIDLabGrownConfig.Endpoint,
       headers: {},
       data: data,
     });

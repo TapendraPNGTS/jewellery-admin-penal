@@ -4,7 +4,7 @@ import HttpClient from "./index.api";
 const baseURL = process.env.REACT_APP_API_URL;
 const AuthKey = process.env.REACT_APP_AUTH_KEY;
 
-class Dashboard extends HttpClient {
+class User extends HttpClient {
   constructor() {
     super(baseURL);
     this._initializeRequestInterceptor();
@@ -15,7 +15,6 @@ class Dashboard extends HttpClient {
     this.instance.interceptors.request.use((config) => {
       config.headers["Authorization"] = `Bearer ${getTokenLocal()}`;
       config.headers["AuthKey"] = `${AuthKey}`;
-
       return config;
     });
   };
@@ -31,16 +30,34 @@ class Dashboard extends HttpClient {
     );
   };
 
-  DashboardConfig = ApiRoutes.Dashboard.Data;
+  AllOrderConfig = ApiRoutes.Orders.AllOrder;
+  OrderByIdConfig = ApiRoutes.Orders.OrderDetails;
+  AllLeadsConfig = ApiRoutes.Orders.AllLeads;
 
-  getDashboard = async () => {
+  getAllLeads = async () => {
     return this.instance({
-      method: this.DashboardConfig.Method,
-      url: this.DashboardConfig.Endpoint,
+      method: this.AllLeadsConfig.Method,
+      url: this.AllLeadsConfig.Endpoint,
       headers: {},
       data: null,
     });
   };
+  getAllOrder = async () => {
+    return this.instance({
+      method: this.AllOrderConfig.Method,
+      url: this.AllOrderConfig.Endpoint,
+      headers: {},
+      data: null,
+    });
+  };
+  getOrderById = async (data) => {
+    return this.instance({
+      method: this.OrderByIdConfig.Method,
+      url: this.OrderByIdConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
 }
 
-export default Dashboard;
+export default User;

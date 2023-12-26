@@ -76,7 +76,7 @@ const ProfileSection = () => {
       } else {
         const userData = await userApi.getUserById({ userId });
         if (!userData || !userData.data.data) {
-          return toast.error("No Data  available");
+          return toast.error("No Data available");
         } else {
           setName(userData.data.data.name);
           setEmail(userData.data.data.email);

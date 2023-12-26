@@ -2,18 +2,76 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "layout/MainLayout";
 import Loadable from "ui-component/Loadable";
+import { Route } from "react-router";
 // dashboard routing
 const Dashboard = Loadable(lazy(() => import("views/dashboard/Default")));
-const Markups = Loadable(lazy(() => import("views/utilities/MarkupPrice/markups")));
-const ShopTiming = Loadable(lazy(() => import("views/utilities/TimingShop/shop-timing")));
+
+// Markups Route
+const AddMarkups = Loadable(
+  lazy(() => import("views/utilities/MarkupPrice/addMarkups"))
+);
+const AllMarkups = Loadable(
+  lazy(() => import("views/utilities/MarkupPrice/allMarkups"))
+);
+const DeleteMarkups = Loadable(
+  lazy(() => import("views/utilities/MarkupPrice/deleteMarkup"))
+);
+const UpdateMarkups = Loadable(
+  lazy(() => import("views/utilities/MarkupPrice/updateMarkups"))
+);
+const ViewMarkups = Loadable(
+  lazy(() => import("views/utilities/MarkupPrice/viewMarkupsById"))
+);
+// Shops Route
+const AddShopTime = Loadable(
+  lazy(() => import("views/utilities/ShopTime/addShtopTime"))
+);
+const AllShopTime = Loadable(
+  lazy(() => import("views/utilities/ShopTime/shopTime"))
+);
+const UpdateShopTime = Loadable(
+  lazy(() => import("views/utilities/ShopTime/updateShopTime"))
+);
+const ViewShopTime = Loadable(
+  lazy(() => import("views/utilities/ShopTime/viewShopTimeById"))
+);
+
+//Natural Daimonds Routes
+const DaimondsHistory = Loadable(
+  lazy(() => import("views/utilities/NatureDaimonds/allNatDaimonds"))
+);
+const EditDaimond = Loadable(
+  lazy(() => import("views/utilities/NatureDaimonds/editDaimond"))
+);
+const ViewDaimond = Loadable(
+  lazy(() => import("views/utilities/NatureDaimonds/viewsDaimond"))
+);
+
+//LabGrown Daimonds Routes
+const LabGrownHistory = Loadable(
+  lazy(() => import("views/utilities/LabgrownDaimonds/allLabDaimonds"))
+);
+const EditDaimondLabgrown = Loadable(
+  lazy(() => import("views/utilities/LabgrownDaimonds/editDaimond"))
+);
+const ViewDaimondLabgrown = Loadable(
+  lazy(() => import("views/utilities/LabgrownDaimonds/viewsDaimond"))
+);
+
+//Orders Routes
+const OrdersHistory = Loadable(
+  lazy(() => import("views/utilities/Orders/ordersHistory"))
+);
+const OrdersView = Loadable(
+  lazy(() => import("views/utilities/Orders/viewOders"))
+);
+const AllLeads = Loadable(
+  lazy(() => import("views/utilities/Leads/leadsHistory"))
+);
 
 //User Route
 const User = Loadable(lazy(() => import("views/utilities/users/user")));
 const AddUser = Loadable(lazy(() => import("views/utilities/users/add-user")));
-const EditUser = Loadable(
-  lazy(() => import("views/utilities/users/edit-user"))
-);
-
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -35,21 +93,101 @@ const MainRoutes = {
           path: "add-user",
           element: <AddUser />,
         },
+      ],
+    },
+
+    {
+      children: [
         {
-          path: "edit-user/:id",
-          element: <EditUser />,
+          path: "add-markups",
+          element: <AddMarkups />,
+        },
+        {
+          path: "all-markups",
+          element: <AllMarkups />,
+        },
+        {
+          path: "update-markups/:id",
+          element: <UpdateMarkups />,
+        },
+        {
+          path: "delete-markups/:id",
+          element: <DeleteMarkups />,
+        },
+        {
+          path: "views-markups/:id",
+          element: <ViewMarkups />,
         },
       ],
     },
-    
+    {
+      children: [
         {
-          path: "add-markups",
-          element: <Markups />,
-        },        
+          path: "/nature-daimonds",
+          element: <DaimondsHistory />,
+        },
         {
-          path: "shop-timings",
-          element: <ShopTiming />,
-        },        
+          path: "edit-daimonds/:id",
+          element: <EditDaimond />,
+        },
+        {
+          path: "view-daimonds/:id",
+          element: <ViewDaimond />,
+        },
+      ],
+    },
+    {
+      children: [
+        {
+          path: "/labgrown-daimonds",
+          element: <LabGrownHistory />,
+        },
+        {
+          path: "view-daimondsLab/:id",
+          element: <ViewDaimondLabgrown />,
+        },
+        {
+          path: "edit-daimondsLab/:id",
+          element: <EditDaimondLabgrown />,
+        },
+      ],
+    },
+    {
+      children: [
+        {
+          path: "/orders-history",
+          element: <OrdersHistory />,
+        },
+        {
+          path: "/view-orders/:id",
+          element: <OrdersView />,
+        },
+        {
+          path: "/leads-history",
+          element: <AllLeads />,
+        },
+      ],
+    },
+    {
+      children: [
+        {
+          path: "/add-shoptime",
+          element: <AddShopTime />,
+        },
+        {
+          path: "/shoptime-history",
+          element: <AllShopTime />,
+        },
+        {
+          path: "/update-shoptime/:id",
+          element: <UpdateShopTime />,
+        },
+        {
+          path: "/view-shoptime/:id",
+          element: <ViewShopTime />,
+        },
+      ],
+    },
   ],
 };
 

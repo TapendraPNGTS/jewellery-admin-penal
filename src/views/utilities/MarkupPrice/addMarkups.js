@@ -4,7 +4,7 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import UserApi from "apis/user.api";
+import UserApi from "apis/markup.api";
 
 import {
   Button,
@@ -58,46 +58,27 @@ function AddUser() {
   async function handleSubmit(event) {
     event.preventDefault();
     if(!isCommiError && !isMaxMarkError && !isMinMarkError){
-    const addUserResponse = await userApi.addUser({
-      minMarkup,
-      maxMarkup,
-      commission
+    const addUserResponse = await userApi.getAddMarkup({
+      min:minMarkup,
+      max:maxMarkup,
+      commission:commission,
     });
-    // if (addUserResponse && addUserResponse?.data?.code === 200) {
-    //   toast.success(`Added successsfully`);
-    //   navigate("/user", { replace: true });
-    // } else {
-    //   return toast.error(`Something went wrong!`);
-    // }
+    if (addUserResponse && addUserResponse?.data?.code === 200) {
+      toast.success(`Added successsfully`);
+      navigate("/all-markups", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
   }
 
-  // const getAllBooth = useCallback(async () => {
-  //   try {
-  //     const getAllBoothResponse = await boothApi.getAllBooth();
-  //     if (getAllBoothResponse && getAllBoothResponse?.data?.code === 200) {
-  //       dispatch(updateAllBooth(getAllBoothResponse.data.data));
-  //     } else {
-  //       return toast.error(`Something went wrong!`);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("Something went wrong");
-  //     throw error;
-  //   }
-  // });
-  // useEffect(() => {
-  //   if (booths.length === 0) {
-  //     getAllBooth();
-  //   }
-  // }, []);
   return (
     <MainCard>
       <form onSubmit={handleSubmit} action="#">
         <Grid container spacing={gridSpacing}>
           <Grid item xs={12} md={6}>
             <Stack>
-              <InputLabel required>Minimum</InputLabel>
+              <InputLabel required>Minimum $</InputLabel>
               <TextField
                 fullWidth
                 id="min-markup"
@@ -114,7 +95,7 @@ function AddUser() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Stack>
-              <InputLabel required>maximum</InputLabel>
+              <InputLabel required>maximum $</InputLabel>
               <TextField
                 fullWidth
                 id="max-markup"
@@ -130,7 +111,7 @@ function AddUser() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Stack>
-              <InputLabel required>Commission</InputLabel>
+              <InputLabel required>Commission %</InputLabel>
               <TextField
                 fullWidth
                 id="commission"

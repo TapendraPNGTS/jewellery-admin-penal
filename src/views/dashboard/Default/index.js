@@ -10,40 +10,48 @@ import EarningCard from "./EarningCard";
 import { gridSpacing } from "store/constant";
 import DashboardApi from "apis/dashboard.api";
 import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from 'react-redux';
 // ==============================|| DEFAULT DASHBOARD ||============================== //
+import { useTheme } from "@mui/material/styles";
+import TotalLineChartCard from "ui-component/cards/TotalLineChartCard";
+import {TotalOrder,TotalUser} from '../../../redux/redux-slice/dashboard.slice'
 
 const Dashboard = () => {
-  const [isLoading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const dashboardApi = new DashboardApi();
+  const [isLoading, setLoading] = useState(true);
+  const theme = new useTheme();
+  const User = useSelector((state) => state.dashBoard.totalUser);
+  const Order = useSelector((state) => state.dashBoard.totalOrder);
 
-  const [volunteer, setVolunteer] = useState(0);
-  const [booth, setBooth] = useState(0);
-  const [voter, setVoter] = useState(0);
-  const [news, setNews] = useState(0);
-  const [task, setTask] = useState(0);
-  const [post, setPost] = useState(0);
-  const [data, setData] = useState([]);
-  const [voterView, setVoterView] = useState([]);
+  const [natural, setNatural] = useState('0');
+  const [labgrown, setLabgrown] = useState('0');
+  
+  var UserTotal = {
+    month: User.month,
+    total: User.total,
+    current: User.length != 0 ? User.month[User.month.length - 1] : 0,
+    };
+  var OrderTotal = {
+    month: Order.month,
+    total: Order.total,
+    current: Order.length != 0 ? Order.month[Order.month.length - 1] : 0,
+    };
+
+
+
 
   const getDashboard = useCallback(async () => {
     try {
       const dashboardData = await dashboardApi.getDashboard();
-      if (!dashboardData || !dashboardData.data.data) {
+      if (!dashboardData || !dashboardData.data) {
         return toast.error("No Data  available");
       } else {
-        setVolunteer(dashboardData.data.data.volunteer);
-        setBooth(dashboardData.data.data.booth);
-        setVoter(dashboardData.data.data.voter.allVoter);
-        setNews(dashboardData.data.data?.news);
-        setTask(dashboardData.data.data?.task);
-        setPost(dashboardData.data.data?.post);
-        setData([
-          dashboardData.data.data.percentages.percentageMen,
-          dashboardData.data.data.percentages.percentageWomen,
-        ]);
-        setVoterView(dashboardData.data.data.voterView);
+        setNatural(dashboardData.data.natural);
+        setLabgrown(dashboardData.data.lab);
+        dispatch(TotalUser(dashboardData.data.user))
+        dispatch(TotalOrder(dashboardData.data.order))
         setLoading(false);
-
         return;
       }
     } catch (error) {
@@ -57,53 +65,189 @@ const Dashboard = () => {
     getDashboard();
   }, []);
 
+
+
+  var UserOption = {
+    type: "area",
+    height: 100,
+    options: {
+      chart: {
+        sparkline: {
+          enabled: true,
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      colors: ["#fff"],
+      fill: {
+        type: "solid",
+        opacity: 0.4,
+      },
+      stroke: {
+        curve: "smooth",
+        width: 3,
+      },
+      yaxis: {
+        min: 0,
+        max: 30,
+      },
+      tooltip: {
+        theme: "dark",
+        fixed: {
+          enabled: false,
+        },
+        x: {
+          show: false,
+        },
+        y: {
+          title: {
+            formatter: () => "Total User",
+          },
+        },
+        marker: {
+          show: false,
+        },
+      },
+    },
+    series: [
+      {
+        name: "series1",
+        data: UserTotal.month,
+      },
+    ],
+  };
+  var OrderOption = {
+    type: "area",
+    height: 100,
+    options: {
+      chart: {
+        sparkline: {
+          enabled: true,
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      colors: ["#fff"],
+      fill: {
+        type: "solid",
+        opacity: 0.4,
+      },
+      stroke: {
+        curve: "smooth",
+        width: 3,
+      },
+      yaxis: {
+        min: 0,
+        max: 30,
+      },
+      tooltip: {
+        theme: "dark",
+        fixed: {
+          enabled: false,
+        },
+        x: {
+          show: false,
+        },
+        y: {
+          title: {
+            formatter: () => "Total Order",
+          },
+        },
+        marker: {
+          show: false,
+        },
+      },
+    },
+    series: [
+      {
+        name: "series1",
+        data: OrderTotal.month,
+      },
+    ],
+  }
   return (
     <Grid container spacing={gridSpacing}>
+      <Grid item xs={12} md={6} sm={6} lg={4}>
+        <TotalLineChartCard
+          bgColor={theme.palette.common.black}
+          chartData={UserOption}
+          title="Total User"
+          footerData={[
+            {
+              value: `${UserTotal.total}`,
+              label: "Total User",
+            },
+            {
+              value: `${UserTotal.current}`,
+              label: "Current Month User",
+            },
+          ]}
+        />
+      </Grid>
+      <Grid item xs={12} md={6} sm={6} lg={4}>
+        <TotalLineChartCard
+          bgColor={theme.palette.common.black}
+          chartData={OrderOption}
+          title="Total User"
+          footerData={[
+            {
+              value: `${OrderTotal.total}`,
+              label: "Total User",
+            },
+            {
+              value: `${OrderTotal.current}`,
+              label: "Current Month User",
+            },
+          ]}
+        />
+      </Grid>
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item lg={4} md={6} sm={6} xs={12}>
             <EarningCard
               isLoading={isLoading}
-              isCount={volunteer}
-              isTitle={`Total Volunter`}
+              isCount={natural}
+              isTitle={`Total Natural`}
             />
           </Grid>
           <Grid item lg={4} md={6} sm={6} xs={12}>
             <EarningCard
               isLoading={isLoading}
-              isCount={booth}
-              isTitle={`Total booth`}
+              isCount={labgrown}
+              isTitle={`Total LabGrown`}
             />
           </Grid>
-          <Grid item lg={4} md={6} sm={6} xs={12}>
+          {/* <Grid item lg={4} md={6} sm={6} xs={12}>
             <EarningCard
               isLoading={isLoading}
-              isCount={voter}
+              // isCount={voter}
               isTitle={`Total Voters`}
             />
-          </Grid>
-
+          </Grid> */}
+{/* 
           <Grid item lg={4} md={6} sm={6} xs={12}>
             <EarningCard
               isLoading={isLoading}
-              isCount={news}
+              // isCount={news}
               isTitle={`Total News`}
             />
           </Grid>
           <Grid item lg={4} md={6} sm={6} xs={12}>
             <EarningCard
               isLoading={isLoading}
-              isCount={task}
+              // isCount={task}
               isTitle={`Total Task`}
             />
           </Grid>
           <Grid item lg={4} md={6} sm={6} xs={12}>
             <EarningCard
               isLoading={isLoading}
-              isCount={post}
+              // isCount={post}
               isTitle={`Total Post`}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item lg={6} md={6} sm={12} xs={12}>
             {/* <BajajAreaChartCard isLoading={isLoading} isData={voterView} /> */}

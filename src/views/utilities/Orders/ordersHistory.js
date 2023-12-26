@@ -1,8 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 // material-ui
 import { Card, Grid } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import EditIcon from "@mui/icons-material/Edit";
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 // project imports
@@ -15,42 +15,38 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import UserApi from "apis/user.api";
-import { updateAllUser } from "redux/redux-slice/user.slice";
+import OrderApi from "apis/order.api";
+import { AllOrders } from "redux/redux-slice/orders.slice";
 
 // ===============================|| COLOR BOX ||=============================== //
 // ===============================|| UI COLOR ||=============================== //
 export default function Users() {
   const dispatch = useDispatch();
-  const userApi = new UserApi();
+  const orders = new OrderApi();
 
-  const rows = useSelector((state) => state.user.User);
-  const authToken = useSelector((state) => state.user.x_auth_token);
-
-  const [search, setSearch] = React.useState("");
-  const [page, setPage] = React.useState(0);
+  const rows = useSelector((state) => state.orders.allOrders);
+  const [search, setSearch] = React.useState('');
+  const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    setRowsPerPage( +event.target.value);
+    setPage(1);
   };
 
   const getAllUser = useCallback(async () => {
     try {
-      const users = await userApi.getAllUser({authToken});
+      const users = await orders.getAllOrder({page: page, recordsLimit: rowsPerPage});
       if (!users || !users.data.data) {
-        return toast.error("no latest users available");
       } else {
-        dispatch(updateAllUser(users.data.data));
+        dispatch(AllOrders(users.data.data));
         return;
       }
     } catch (error) {
@@ -62,7 +58,7 @@ export default function Users() {
 
   useEffect(() => {
     getAllUser();
-  }, []);
+  }, []); 
 
   function formatDate(date) {
     return new Date(date).toLocaleString("en-us", {
@@ -104,12 +100,13 @@ export default function Users() {
                 <Table stickyHeader aria-label="sticky table">
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ pl: 3 }}>S No.</TableCell>
-                      {/* <TableCell>User Id</TableCell> */}
-                      <TableCell>First Name</TableCell>
-                      <TableCell>Last Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell>Action</TableCell>
+                      <TableCell sx={{ pl: 3 }}>Sr No.</TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell>User Name</TableCell>
+                      <TableCell>Email </TableCell>
+                      <TableCell>Order Id </TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -117,7 +114,7 @@ export default function Users() {
                       .filter((row) =>
                         search.toLowerCase() === ""
                           ? row
-                          : row.title.toLowerCase().includes(search)
+                          : row?.userId?.firstName.toLowerCase().includes(search)
                       )
                       .slice(
                         page * rowsPerPage,
@@ -132,30 +129,21 @@ export default function Users() {
                             key={index}
                           >
                             <TableCell align="start">{index + 1}</TableCell>
-                            {/* <TableCell align="start">{row.userId}</TableCell> */}
-                            <TableCell align="start">{row.firstName}</TableCell>
-                            <TableCell align="start">{row.lastName}</TableCell>
-                            <TableCell align="start">{row.email}</TableCell>
+                            <TableCell align="start">{row?.userId?.createdAt ? formatDate(row.userId.createdAt) : '-'}</TableCell>
+                            <TableCell align="start">{row?.userId?.firstName ? row.userId.firstName: ''} {row?.userId?.lastName ? row.userId.lastName : ""}</TableCell>
+                            <TableCell align="start">{row?.userId?.email ? row.userId.email : "-"}</TableCell>
+                            <TableCell align="start">{row?.orderNumber ? row.orderNumber : "-"}</TableCell>
+                            <TableCell align="start">{row?.status ? row.status : "-"}</TableCell>
                             <TableCell>
-                              <Link to={`/edit-user/${row.userId}`}>
+                              <Link to={`/view-orders/${row.cartId}`}>
                                 <IconButton
                                   color="primary"
                                   aria-label="view"
                                   size="large"
                                 >
-                                  <EditIcon sx={{ fontSize: "1.1rem" }} />
+                                  <DisplaySettingsIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
-                              {/* <IconButton
-                                onClick={(e) => {
-                                  handleDelete(row.userId);
-                                }}
-                                color="primary"
-                                aria-label="view"
-                                size="large"
-                              >
-                                <DeleteIcon sx={{ fontSize: "1.1rem" }} />
-                              </IconButton> */}
                             </TableCell>
                           </TableRow>
                         );

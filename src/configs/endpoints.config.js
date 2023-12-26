@@ -9,7 +9,7 @@ export const HttpMethod = {
 const ApiRoutes = {
   Dashboard: {
     Data: {
-      Endpoint: "dashboard",
+      Endpoint: "/dashboard",
       Method: HttpMethod.Post,
     },
   },
@@ -28,19 +28,85 @@ const ApiRoutes = {
       Endpoint: "user/getUserById",
       Method: HttpMethod.Post,
     },
-    AddUser: {
-      Endpoint: "user/createUser",
+  },
+  Markup: {
+    AddMarkup: {
+      Endpoint: "addMarkup",
       Method: HttpMethod.Post,
     },
-    EditUser: {
-      Endpoint: "user/editUser",
+    UpdateMarkup: {
+      Endpoint: "updateMarkup",
       Method: HttpMethod.Post,
     },
-    DeleteUser: {
-      Endpoint: "user/deleteUser",
+    AllMarkup: {
+      Endpoint: "getAllMarkup",
+      Method: HttpMethod.Post,
+    },
+    MarkupById: {
+      Endpoint: "getMarkupById",
+      Method: HttpMethod.Post,
+    },
+    DeleteMarkup: {
+      Endpoint: "deleteMarkup",
       Method: HttpMethod.Post,
     },
   },
+  Daimonds: {
+    AllLabgrown: {
+      Endpoint: "getAllLabgrown",
+      Method: HttpMethod.Post,
+    },
+    AllNatural: {
+      Endpoint: "getAllNatural",
+      Method: HttpMethod.Post,
+    },
+    DaimondByIDNatural: {
+      Endpoint: "getNaturalDetail",
+      Method: HttpMethod.Post,
+    },
+    DaimondByIDLabGrown: {
+      Endpoint: "getLabGrownDetail",
+      Method: HttpMethod.Post,
+    },
+  },
+  Orders: {
+    AllOrder: {
+      Endpoint: "getAllOrder",
+      Method: HttpMethod.Post,
+    },
+    OrderDetails: {
+      Endpoint: "orderDetail",
+      Method: HttpMethod.Post,
+    },
+    AllLeads: {
+      Endpoint: "getAllLead",
+      Method: HttpMethod.Post,
+    },
+  },
+  ShopTime: {
+    AllShop: {
+      Endpoint: "getAllShop",
+      Method: HttpMethod.Post,
+    },
+    AddShop: {
+      Endpoint: "addShop",
+      Method: HttpMethod.Post,
+    },
+    EditShop: {
+      Endpoint: "editShop",
+      Method: HttpMethod.Post,
+    },
+    ShopById: {
+      Endpoint: "getShopById",
+      Method: HttpMethod.Post,
+    },
+    DeleteShop: {
+      Endpoint: "deleteShop",
+      Method: HttpMethod.Post,
+    },
+  },
+  
 };
+
 
 export default ApiRoutes;

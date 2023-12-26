@@ -1,8 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 // material-ui
 import { Card, Grid } from "@mui/material";
 import Paper from "@mui/material/Paper";
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 // project imports
@@ -15,42 +18,45 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import UserApi from "apis/user.api";
-import { updateAllUser } from "redux/redux-slice/user.slice";
+import ShopTime from "apis/shoptime.api";
+import { AllShopTime } from "redux/redux-slice/shopTime.slice";
 
 // ===============================|| COLOR BOX ||=============================== //
 // ===============================|| UI COLOR ||=============================== //
 export default function Users() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userApi = new UserApi();
+  const shopTime = new ShopTime();
 
-  const rows = useSelector((state) => state.user.User);
-  const authToken = useSelector((state) => state.user.x_auth_token);
+  const rows = useSelector((state) => state.shopTime.allShopTime);
 
-  const [search, setSearch] = React.useState("");
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
+const [search, setSearch] = React.useState("");
+const [page, setPage] = React.useState(1);
+const [weeks, setWeeks] = React.useState('');
+const [rowsPerPage, setRowsPerPage] = useState(10);
+// const [rows, setRows] = useState('');
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    setRowsPerPage( +event.target.value);
+    setPage(1);
   };
 
   const getAllUser = useCallback(async () => {
     try {
-      const users = await userApi.getAllUser({authToken});
+      const users = await shopTime.getAllShop();
       if (!users || !users.data.data) {
-        return toast.error("no latest users available");
+        return toast.error("no latest data available");
       } else {
-        dispatch(updateAllUser(users.data.data));
+        dispatch(AllShopTime(users.data.data));
+        setWeeks(users.data.data[0].week);
+        return toast.success("Latest data available");
         return;
       }
     } catch (error) {
@@ -60,18 +66,33 @@ export default function Users() {
     }
   });
 
+   const handleDelete = async (timeId) => {
+    try {
+      const deleteUserResponse = await shopTime.getDeleteShop({ timeId });
+      if (deleteUserResponse && deleteUserResponse?.data?.code === 200) {
+        getAllUser();
+        return toast.success("Deleted Successfully");
+      } else {
+        return toast.error(deleteUserResponse.data?.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  };
+
   useEffect(() => {
     getAllUser();
-  }, []);
+  }, []); 
 
-  function formatDate(date) {
-    return new Date(date).toLocaleString("en-us", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
+  function formatTime(time) {
+    return new Date(time).toLocaleString("en-us", {
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
     });
   }
-
   return (
     <>
       <MainCard
@@ -104,12 +125,15 @@ export default function Users() {
                 <Table stickyHeader aria-label="sticky table">
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ pl: 3 }}>S No.</TableCell>
-                      {/* <TableCell>User Id</TableCell> */}
-                      <TableCell>First Name</TableCell>
-                      <TableCell>Last Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell>Action</TableCell>
+                      <TableCell sx={{ pl: 3 }}>Sr No.</TableCell>
+                      <TableCell>Start Working day</TableCell>
+                      <TableCell>End Working day </TableCell>
+                      {/* <TableCell>Weight</TableCell> */}
+                      <TableCell>start leave Day</TableCell>
+                      <TableCell>End leave Day</TableCell>
+                      <TableCell>Open Time</TableCell>
+                      <TableCell>Close Time</TableCell>
+                      <TableCell>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -119,10 +143,10 @@ export default function Users() {
                           ? row
                           : row.title.toLowerCase().includes(search)
                       )
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
+                      // .slice(
+                      //   page * rowsPerPage,
+                      //   page * rowsPerPage + rowsPerPage
+                      // )
                       .map((row, index) => {
                         return (
                           <TableRow
@@ -131,13 +155,25 @@ export default function Users() {
                             tabIndex={-1}
                             key={index}
                           >
+                            
                             <TableCell align="start">{index + 1}</TableCell>
-                            {/* <TableCell align="start">{row.userId}</TableCell> */}
-                            <TableCell align="start">{row.firstName}</TableCell>
-                            <TableCell align="start">{row.lastName}</TableCell>
-                            <TableCell align="start">{row.email}</TableCell>
+                            <TableCell align="start">{row?.week.start ? row.week.start : "-"}</TableCell>
+                            <TableCell align="start">{row?.week.end ? row.week.end : '-'}</TableCell>
+                            <TableCell align="start">{row?.weekEnd?.start ? row.weekEnd.start : "-"}</TableCell>
+                            <TableCell align="start">{row?.weekEnd?.end ? row.weekEnd?.end : "-"}</TableCell>
+                            <TableCell align="start">{row?.week?.startTime ? formatTime(row.week.startTime) : "-"}</TableCell>
+                            <TableCell align="start">{row?.week?.endTime ? formatTime(row.week.endTime) : "-"}</TableCell>
                             <TableCell>
-                              <Link to={`/edit-user/${row.userId}`}>
+                              <Link to={`/add-shoptime`}>
+                                <IconButton
+                                  color="primary"
+                                  aria-label="view"
+                                  size="large"
+                                >
+                                  <AddCircleOutlineIcon sx={{ fontSize: "1.1rem" }} />
+                                </IconButton>
+                              </Link>
+                              <Link to={`/update-shoptime/${row.timeId}`}>
                                 <IconButton
                                   color="primary"
                                   aria-label="view"
@@ -146,16 +182,26 @@ export default function Users() {
                                   <EditIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
-                              {/* <IconButton
+                              <Link to={`/view-shoptime/${row.timeId}`}>
+                                <IconButton
+                                  color="primary"
+                                  aria-label="view"
+                                  size="large"
+                                >
+                                  <DisplaySettingsIcon sx={{ fontSize: "1.1rem" }} />
+                                </IconButton>
+                              </Link>
+
+                              <IconButton
                                 onClick={(e) => {
-                                  handleDelete(row.userId);
+                                  handleDelete(row.timeId); 
                                 }}
                                 color="primary"
                                 aria-label="view"
                                 size="large"
                               >
                                 <DeleteIcon sx={{ fontSize: "1.1rem" }} />
-                              </IconButton> */}
+                              </IconButton>
                             </TableCell>
                           </TableRow>
                         );

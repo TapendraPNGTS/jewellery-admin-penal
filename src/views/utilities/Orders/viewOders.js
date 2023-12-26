@@ -1,40 +1,38 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 // material-ui
-import { Card, Grid } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import EditIcon from "@mui/icons-material/Edit";
-import { IconButton } from "@mui/material";
-import { Link } from "react-router-dom";
+import {
+  Grid,
+  Card,
+  TableRow,
+  TablePagination,
+  Paper,
+  TextField,
+  TableCell,
+  Table,
+  TableHead,
+  TableBody,
+  TableContainer,
+  Typography,
+} from "@mui/material";
+
 // project imports
 import MainCard from "ui-component/cards/MainCard";
 import { gridSpacing } from "store/constant";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import { useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
-
+import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import UserApi from "apis/user.api";
-import { updateAllUser } from "redux/redux-slice/user.slice";
+import OrderApi from "apis/order.api";
 
-// ===============================|| COLOR BOX ||=============================== //
-// ===============================|| UI COLOR ||=============================== //
-export default function Users() {
-  const dispatch = useDispatch();
-  const userApi = new UserApi();
+function App() {
+  const params = useParams();
+  const orderApi = new OrderApi();
 
-  const rows = useSelector((state) => state.user.User);
-  const authToken = useSelector((state) => state.user.x_auth_token);
-
+  const [rows, setRows] = React.useState([]);
+  const [fName, setFName] = React.useState('');
+  const [lName, setLName] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [search, setSearch] = React.useState("");
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -46,15 +44,20 @@ export default function Users() {
 
   const getAllUser = useCallback(async () => {
     try {
-      const users = await userApi.getAllUser({authToken});
+      const users = await orderApi.getOrderById({
+        cartId: params.id,
+      });
       if (!users || !users.data.data) {
-        return toast.error("no latest users available");
+        return toast.error("no latest data available");
       } else {
-        dispatch(updateAllUser(users.data.data));
-        return;
+        setRows(users.data.data.item);
+        setFName(users.data.data.userId.firstName);
+        setLName(users.data.data.userId.lastName);
+        setEmail(users.data.data.userId.email);
+        return toast.success("Latest data available");
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error("Something went wrong");
       throw error;
     }
@@ -74,6 +77,27 @@ export default function Users() {
 
   return (
     <>
+      <MainCard title="Order Details">
+        <Grid container spacing={gridSpacing}>
+          <Grid
+            item
+            container
+            spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 4, sm: 8, md: 8 }}
+          >
+            <Grid item>
+              <Typography variant="h4">
+                Name : &nbsp;&nbsp;{fName} &nbsp;{lName+' ,'}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="h4">
+              Email : &nbsp;&nbsp; {email+' ,'}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      </MainCard>
       <MainCard
         title={
           <Grid
@@ -104,12 +128,10 @@ export default function Users() {
                 <Table stickyHeader aria-label="sticky table">
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ pl: 3 }}>S No.</TableCell>
-                      {/* <TableCell>User Id</TableCell> */}
-                      <TableCell>First Name</TableCell>
-                      <TableCell>Last Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell>Action</TableCell>
+                      <TableCell sx={{ pl: 3 }}>Sr No.</TableCell>
+                      <TableCell>Item Name</TableCell>
+                      <TableCell>Price</TableCell>
+                      <TableCell>Total Price</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -117,7 +139,7 @@ export default function Users() {
                       .filter((row) =>
                         search.toLowerCase() === ""
                           ? row
-                          : row.title.toLowerCase().includes(search)
+                          : row?.name?.toLowerCase().includes(search)
                       )
                       .slice(
                         page * rowsPerPage,
@@ -132,30 +154,16 @@ export default function Users() {
                             key={index}
                           >
                             <TableCell align="start">{index + 1}</TableCell>
-                            {/* <TableCell align="start">{row.userId}</TableCell> */}
-                            <TableCell align="start">{row.firstName}</TableCell>
-                            <TableCell align="start">{row.lastName}</TableCell>
-                            <TableCell align="start">{row.email}</TableCell>
-                            <TableCell>
-                              <Link to={`/edit-user/${row.userId}`}>
-                                <IconButton
-                                  color="primary"
-                                  aria-label="view"
-                                  size="large"
-                                >
-                                  <EditIcon sx={{ fontSize: "1.1rem" }} />
-                                </IconButton>
-                              </Link>
-                              {/* <IconButton
-                                onClick={(e) => {
-                                  handleDelete(row.userId);
-                                }}
-                                color="primary"
-                                aria-label="view"
-                                size="large"
-                              >
-                                <DeleteIcon sx={{ fontSize: "1.1rem" }} />
-                              </IconButton> */}
+                            <TableCell align="start">
+                              {row?.name ? row.name : "-"}
+                            </TableCell>
+                            <TableCell align="start">
+                              {row?.price ? row.price.toFixed(2) : "-"}
+                            </TableCell>
+                            <TableCell align="start">
+                              {row?.totalPrice
+                                ? row.totalPrice.toFixed(2)
+                                : "-"}
                             </TableCell>
                           </TableRow>
                         );
@@ -181,3 +189,5 @@ export default function Users() {
     </>
   );
 }
+
+export default App;
