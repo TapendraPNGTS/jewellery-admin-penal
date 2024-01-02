@@ -33,6 +33,7 @@ class User extends HttpClient {
   AllOrderConfig = ApiRoutes.Orders.AllOrder;
   OrderByIdConfig = ApiRoutes.Orders.OrderDetails;
   AllLeadsConfig = ApiRoutes.Orders.AllLeads;
+  LeadsByIdConfig = ApiRoutes.Orders.LeadsById;
 
   getAllLeads = async () => {
     return this.instance({
@@ -40,6 +41,14 @@ class User extends HttpClient {
       url: this.AllLeadsConfig.Endpoint,
       headers: {},
       data: null,
+    });
+  };
+  getLeadsById = async (data) => {
+    return this.instance({
+      method: this.LeadsByIdConfig.Method,
+      url: this.LeadsByIdConfig.Endpoint,
+      headers: {},
+      data: data,
     });
   };
   getAllOrder = async () => {

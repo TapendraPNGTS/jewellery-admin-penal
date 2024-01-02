@@ -17,7 +17,6 @@ function App() {
   const dispatch = useDispatch();
 
   const rows = useSelector((state) => state.daimonds.AllNaturalById);
-
   const getAllUser = useCallback(async () => {
     try {
       const users = await daimonds.getNaturalById({

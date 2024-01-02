@@ -35,7 +35,7 @@ const TotalLineChartCard = ({ bgColor, chartData, title, percentage, value,foote
     }
     return (
         <Card>
-            <Box sx={{ color: '#fff', bgcolor: bgColor || theme.palette.primary.dark }}>
+            <Box sx={{ color: '#fff', bgcolor: bgColor || theme.palette.primary.dark}}>
                 <Box sx={{ p: 2.5 }}>
                     <Grid container direction="column">
                         <Grid item container justifyContent="space-between" alignItems="center">

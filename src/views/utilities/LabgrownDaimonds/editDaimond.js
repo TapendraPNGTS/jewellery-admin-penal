@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import DaimondsApi from "apis/daimonds.api";
 // import BoothApi from "apis/booth.api";
 import { useDispatch, useSelector } from "react-redux";
-import { LabgrownByIdEdit } from "../../../redux/redux-slice/daimonds.slice";
+// import { LabgrownByIdEdit } from "../../../redux/redux-slice/daimonds.slice";
 
 import { Button, Grid, Stack, TextField } from "@mui/material";
 
@@ -18,42 +18,24 @@ function AddUser() {
 
   const daimondsApi = new DaimondsApi();
 
-  const rows = useSelector((state) => state.daimonds.AllLabgrownByIdEdit);
+  // const rows = useSelector((state) => state.daimonds.AllLabgrownByIdEdit);
 
-  const [carat, setCarat] = useState(rows.carat ? rows.carat : "-");
-  const [color, setColor] = useState(rows.color ? rows.color : "-");
-  const [clarity, setClarity] = useState(rows.clarity ? rows.clarity : "-");
-  const [cut, setCut] = useState(rows.cut ? rows.cut : "-");
-  const [discount, setDiscount] = useState(rows.discount ? rows.discount : "-");
-  const [country, setCountry] = useState(rows.country ? rows.country : "-");
-  const [state, setState] = useState(rows.state ? rows.state : "-");
-  const [measurmentsHeight, setMeasurmentsHeight] = useState(
-    rows.measurmentsHeight ? rows.measurmentsHeight : "-"
-  );
-  const [measurmentsWidth, setMeasurmentsWidth] = useState(
-    rows.measurmentsWidth ? rows.measurmentsWidth : "-"
-  );
-  const [measurmentsLength, setMeasurmentsLength] = useState(
-    rows.measurmentsLength ? rows.measurmentsLength : "-"
-  );
-  const [naturalFancyColor, setNaturalFancyColor] = useState(
-    rows.naturalFancyColor ? rows.naturalFancyColor : "-"
-  );
-  const [naturalFancyColorIntensity, setNaturalFancyColorIntensity] = useState(
-    rows.naturalFancyColorIntensity ? rows.naturalFancyColorIntensity : "-"
-  );
-  const [pricePerCarat, setPricePerCarat] = useState(
-    rows.pricePerCarat ? rows.pricePerCarat : "-"
-  );
-  const [enhancement, setEnhancement] = useState(
-    rows.enhancement ? rows.enhancement : "-"
-  );
-  const [totalPrice, setTotalPrice] = useState(
-    rows.totalPrice ? rows.totalPrice : " -"
-  );
-  const [certificateNumber, setCertificateNumber] = useState(
-    rows.certificateNumber ? rows.certificateNumber : "-"
-  );
+  const [carat, setCarat] = useState("-");
+  const [color, setColor] = useState("-");
+  const [clarity, setClarity] = useState("-");
+  const [cut, setCut] = useState("-");
+  const [discount, setDiscount] = useState("-");
+  const [country, setCountry] = useState("-");
+  const [state, setState] = useState("-");
+  const [measurmentsHeight, setMeasurmentsHeight] = useState("-");
+  const [measurmentsWidth, setMeasurmentsWidth] = useState("-");
+  const [measurmentsLength, setMeasurmentsLength] = useState("-");
+  const [naturalFancyColor, setNaturalFancyColor] = useState("-");
+  const [naturalFancyColorIntensity, setNaturalFancyColorIntensity] = useState("-");
+  const [pricePerCarat, setPricePerCarat] = useState("-");
+  const [enhancement, setEnhancement] = useState("-");
+  const [totalPrice, setTotalPrice] = useState(" -");
+  const [certificateNumber, setCertificateNumber] = useState("-");
 
   const getAllUser = useCallback(async () => {
     // event.preventDefault();
@@ -64,7 +46,25 @@ function AddUser() {
       if (!users || !users.data.data) {
         return toast.error("no latest data available");
       } else {
-        dispatch(LabgrownByIdEdit(users.data.data));
+        setCertificateNumber(users.data.data.certificateNumber);
+        setTotalPrice(users.data.data.totalPrice);
+        setEnhancement(users.data.data.enhancement);
+        setPricePerCarat(users.data.data.pricePerCarat);
+        setNaturalFancyColorIntensity(
+          users.data.data.naturalFancyColorIntensity
+        );
+        setNaturalFancyColor(users.data.data.naturalFancyColor);
+        setMeasurmentsLength(users.data.data.measurmentsLength);
+        setMeasurmentsWidth(users.data.data.measurmentsWidth);
+        setMeasurmentsHeight(users.data.data.measurmentsHeight);
+        setState(users.data.data.state);
+        setCountry(users.data.data.country);
+        setDiscount((users.data.data.discount));
+        setCut(users.data.data.cut);
+        setClarity(users.data.data.clarity);
+        setColor(users.data.data.color);
+        setCarat(users.data.data.carat);
+        // dispatch(LabgrownByIdEdit(users.data.data));
         return toast.success("Latest data available");
         return;
       }
@@ -75,13 +75,27 @@ function AddUser() {
     }
   });
 
+  const updateDaimond = async(event) =>{
+    // event.preventDefault();
+    const addUserResponse = await daimondsApi.getLabgrownEdit({
+      id: params.id,
+      discount: discount,
+    });
+    if (addUserResponse && addUserResponse?.data?.code === 200) {
+      toast.success(`Added successsfully`);
+      navigate("/labgrown-daimonds", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
+  }
+
   useEffect(() => {
     getAllUser();
   }, []);
 
   return (
     <MainCard>
-      {/* <form onSubmit={handleSubmit} action="#"> */}
+      <form onSubmit={updateDaimond} action="#">
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12} md={6}>
           <Stack>
@@ -94,6 +108,7 @@ function AddUser() {
               onChange={(e) => {
                 setCarat(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -108,6 +123,7 @@ function AddUser() {
               onChange={(e) => {
                 setColor(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -120,6 +136,7 @@ function AddUser() {
               onChange={(e) => {
                 setClarity(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -132,12 +149,13 @@ function AddUser() {
               onChange={(e) => {
                 setCut(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
         <Grid item xs={12} md={6}>
           <Stack>
-            <InputLabel>Discount</InputLabel>
+            <InputLabel>Discount %</InputLabel>
             <TextField
               fullWidth
               type="number"
@@ -145,6 +163,7 @@ function AddUser() {
               onChange={(e) => {
                 setDiscount(e.target.value);
               }}
+
             />
           </Stack>
         </Grid>
@@ -157,6 +176,7 @@ function AddUser() {
               onChange={(e) => {
                 setCountry(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -169,6 +189,7 @@ function AddUser() {
               onChange={(e) => {
                 setState(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -182,6 +203,7 @@ function AddUser() {
               onChange={(e) => {
                 setMeasurmentsHeight(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -195,6 +217,7 @@ function AddUser() {
               onChange={(e) => {
                 setMeasurmentsWidth(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -208,6 +231,7 @@ function AddUser() {
               onChange={(e) => {
                 setMeasurmentsLength(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -220,6 +244,7 @@ function AddUser() {
               onChange={(e) => {
                 setNaturalFancyColor(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -232,12 +257,13 @@ function AddUser() {
               onChange={(e) => {
                 setNaturalFancyColorIntensity(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
         <Grid item xs={12} md={6}>
           <Stack>
-            <InputLabel>PricePerCarat</InputLabel>
+            <InputLabel>PricePerCarat $</InputLabel>
             <TextField
               fullWidth
               type="number"
@@ -245,6 +271,7 @@ function AddUser() {
               onChange={(e) => {
                 setPricePerCarat(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -257,6 +284,7 @@ function AddUser() {
               onChange={(e) => {
                 setEnhancement(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -269,12 +297,13 @@ function AddUser() {
               onChange={(e) => {
                 setCertificateNumber(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
         <Grid item xs={12} md={6}>
           <Stack>
-            <InputLabel>Total Price</InputLabel>
+            <InputLabel>Total Price $</InputLabel>
             <TextField
               fullWidth
               type="number"
@@ -282,6 +311,7 @@ function AddUser() {
               onChange={(e) => {
                 setTotalPrice(e.target.value);
               }}
+              disabled
             />
           </Stack>
         </Grid>
@@ -307,7 +337,7 @@ function AddUser() {
           Submit
         </Button>
       </center>
-      {/* </form> */}
+      </form>
     </MainCard>
   );
 }

@@ -103,7 +103,7 @@ function AddUser() {
   function formatTime(time) {
     return new Date(time).toLocaleString("en-us", {
       hour: "numeric",
-      minute: "numeric",
+      // minute: "numeric",
       // second: "numeric",
     });
   }

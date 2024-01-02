@@ -2,8 +2,8 @@ import React, { useCallback } from "react";
 // material-ui
 import { Card, Grid } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import EditIcon from "@mui/icons-material/Edit";
 import { IconButton } from "@mui/material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Link } from "react-router-dom";
 // project imports
 import MainCard from "ui-component/cards/MainCard";
@@ -132,30 +132,19 @@ export default function Users() {
                             key={index}
                           >
                             <TableCell align="start">{index + 1}</TableCell>
-                            {/* <TableCell align="start">{row.userId}</TableCell> */}
                             <TableCell align="start">{row.firstName}</TableCell>
                             <TableCell align="start">{row.lastName}</TableCell>
                             <TableCell align="start">{row.email}</TableCell>
                             <TableCell>
-                              <Link to={`/edit-user/${row.userId}`}>
+                              <Link to={`/add-user`}>
                                 <IconButton
                                   color="primary"
                                   aria-label="view"
                                   size="large"
                                 >
-                                  <EditIcon sx={{ fontSize: "1.1rem" }} />
+                                  <AddCircleOutlineIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
-                              {/* <IconButton
-                                onClick={(e) => {
-                                  handleDelete(row.userId);
-                                }}
-                                color="primary"
-                                aria-label="view"
-                                size="large"
-                              >
-                                <DeleteIcon sx={{ fontSize: "1.1rem" }} />
-                              </IconButton> */}
                             </TableCell>
                           </TableRow>
                         );

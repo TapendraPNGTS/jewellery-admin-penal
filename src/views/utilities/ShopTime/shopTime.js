@@ -126,13 +126,14 @@ const [rowsPerPage, setRowsPerPage] = useState(10);
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>Sr No.</TableCell>
-                      <TableCell>Start Working day</TableCell>
-                      <TableCell>End Working day </TableCell>
+                      <TableCell>Week Day</TableCell>
+                      <TableCell>Week End</TableCell>
                       {/* <TableCell>Weight</TableCell> */}
-                      <TableCell>start leave Day</TableCell>
-                      <TableCell>End leave Day</TableCell>
+                      <TableCell>WeekEnd Start</TableCell>
+                      <TableCell>WeekEnd End</TableCell>
                       <TableCell>Open Time</TableCell>
                       <TableCell>Close Time</TableCell>
+                      <TableCell>Active</TableCell>
                       <TableCell>Actions</TableCell>
                     </TableRow>
                   </TableHead>
@@ -163,16 +164,8 @@ const [rowsPerPage, setRowsPerPage] = useState(10);
                             <TableCell align="start">{row?.weekEnd?.end ? row.weekEnd?.end : "-"}</TableCell>
                             <TableCell align="start">{row?.week?.startTime ? formatTime(row.week.startTime) : "-"}</TableCell>
                             <TableCell align="start">{row?.week?.endTime ? formatTime(row.week.endTime) : "-"}</TableCell>
+                            <TableCell align="start">{row?.isActive ? 'True' : "False"}</TableCell>
                             <TableCell>
-                              <Link to={`/add-shoptime`}>
-                                <IconButton
-                                  color="primary"
-                                  aria-label="view"
-                                  size="large"
-                                >
-                                  <AddCircleOutlineIcon sx={{ fontSize: "1.1rem" }} />
-                                </IconButton>
-                              </Link>
                               <Link to={`/update-shoptime/${row.timeId}`}>
                                 <IconButton
                                   color="primary"
@@ -182,7 +175,7 @@ const [rowsPerPage, setRowsPerPage] = useState(10);
                                   <EditIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
-                              <Link to={`/view-shoptime/${row.timeId}`}>
+                              {/* <Link to={`/view-shoptime/${row.timeId}`}>
                                 <IconButton
                                   color="primary"
                                   aria-label="view"
@@ -190,7 +183,7 @@ const [rowsPerPage, setRowsPerPage] = useState(10);
                                 >
                                   <DisplaySettingsIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
-                              </Link>
+                              </Link> */}
 
                               <IconButton
                                 onClick={(e) => {

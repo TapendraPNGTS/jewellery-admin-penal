@@ -20,7 +20,6 @@ function App() {
   const params = useParams();
   const shopTime = new ShopTime();
   const navigate = useNavigate();
-  // const defaultTime = '2023-12-25T18:30:00.000Z'; // Replace with your default time
   const [defaultTime , setDefaultTime] = useState('') // Replace with your default time
   const [defaultOffTime , setDefaultOffTime] = useState('') // Replace with your default time
   const [openTiming, setOpenTiming] = useState("");
@@ -29,6 +28,7 @@ function App() {
   const [endDay, setEndDay] = useState("");
   const [LeaveStart, setLeaveStart] = useState("");
   const [LeaveendDay, setLeaveEndtDay] = useState("");
+  const [activeTime, setActiveTime] = useState('false');
   const setting = {
     flexDirection: 'column !important',
   };
@@ -62,14 +62,13 @@ function App() {
       if (!users || !users.data.data) {
         return toast.error("no latest data available");
       } else {
-        // setOpenTiming(formatTime(users.data.data.week.startTime));
-        // setCloseTiming(formatTime(users.data.data.week.endTime));
         setStartDay(users.data.data.week.start);
         setEndDay(users.data.data.week.end);
         setLeaveStart(users.data.data.weekEnd.start);
         setLeaveEndtDay(users.data.data.weekEnd.end);
         setDefaultTime(users.data.data.week.startTime);
         setDefaultOffTime(users.data.data.week.endTime);
+        setActiveTime(users.data.data.isActive);
         return toast.success("Latest data available");
         return;
       }
@@ -86,6 +85,7 @@ function App() {
       timeId: params.id,
       week: week,
       weekEnd: weekEnd,
+      active: activeTime,
     });
     if (addUserResponse && addUserResponse?.data?.code === 200) {
       toast.success(`Added successsfully`);
@@ -93,15 +93,12 @@ function App() {
     } else {
       return toast.error(`Something went wrong!`);
     }
-  }
-
-  
+  }  
   useEffect(() => {
     getAllUser();
     setOpenTiming(dayjs(defaultTime));
     setCloseTiming(dayjs(defaultOffTime));
   }, [defaultTime,defaultOffTime]); 
-
   function formatDate(date) {
     return new Date(date).toLocaleString("en-us", {
       day: "numeric",
@@ -235,6 +232,24 @@ function App() {
                     {day}
                   </MenuItem>
                 ))}
+              </Select>
+            </Stack>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Stack>
+              <InputLabel required>Active Time</InputLabel>
+              <Select
+                fullWidth
+                id="activeTime"
+                name="activeTime"
+                value={activeTime}
+                onChange={(e) => {
+                  setActiveTime(e.target.value);
+                }}
+              >
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
               </Select>
             </Stack>
           </Grid>

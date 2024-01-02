@@ -4,6 +4,7 @@ const initialState = {
   allOrders: [],
   ordersById: [],
   allLeads: [],
+  leadsDetailsById: [],
 };
 //internally using immer lib (can create mutable state)
 export const ordersSlice = createSlice({
@@ -19,10 +20,13 @@ export const ordersSlice = createSlice({
     AllLeads: (state, action) => {
       state.allLeads = action.payload;
     },
+    LeadsDetailsById: (state, action) => {
+      state.leadsDetailsById = action.payload;
+    },
    
   },
 });
 // this is for dispatch
-export const { AllOrders, OrdersById, AllLeads } = ordersSlice.actions;
+export const { AllOrders, OrdersById, AllLeads, LeadsDetailsById } = ordersSlice.actions;
 // this is for configureStore
 export default ordersSlice.reducer;

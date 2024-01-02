@@ -32,8 +32,10 @@ class User extends HttpClient {
 
   AllLabgrownConfig = ApiRoutes.Daimonds.AllLabgrown;
   AllNaturalConfig = ApiRoutes.Daimonds.AllNatural;
-  DaimondByIDLabGrownConfig = ApiRoutes.Daimonds.DaimondByIDLabGrown;
-  DaimondByIDNaturalConfig = ApiRoutes.Daimonds.DaimondByIDNatural;
+  NaturalDaimondByIdConfig = ApiRoutes.Daimonds.NaturalDaimondById;
+  LabGrownDaimondByIdConfig = ApiRoutes.Daimonds.LabGrownDaimondById;
+  NaturalDaimondEditsConfig = ApiRoutes.Daimonds.NaturalDaimondEdits;
+  LabGrownDaimondEditsConfig = ApiRoutes.Daimonds.LabGrownDaimondEdits;
 
   getAllLabgrown = async (data) => {
     return this.instance({
@@ -53,16 +55,32 @@ class User extends HttpClient {
   };
   getNaturalById = async (data) => {
     return this.instance({
-      method: this.DaimondByIDNaturalConfig.Method,
-      url: this.DaimondByIDNaturalConfig.Endpoint,
+      method: this.NaturalDaimondByIdConfig.Method,
+      url: this.NaturalDaimondByIdConfig.Endpoint,
       headers: {},
       data: data,
     });
   };
   getLabgrownById = async (data) => {
     return this.instance({
-      method: this.DaimondByIDLabGrownConfig.Method,
-      url: this.DaimondByIDLabGrownConfig.Endpoint,
+      method: this.LabGrownDaimondByIdConfig.Method,
+      url: this.LabGrownDaimondByIdConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getLabgrownEdit = async (data) => {
+    return this.instance({
+      method: this.LabGrownDaimondEditsConfig.Method,
+      url: this.LabGrownDaimondEditsConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getNaturalEdit = async (data) => {
+    return this.instance({
+      method: this.NaturalDaimondEditsConfig.Method,
+      url: this.NaturalDaimondEditsConfig.Endpoint,
       headers: {},
       data: data,
     });

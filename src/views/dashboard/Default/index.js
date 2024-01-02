@@ -26,7 +26,7 @@ const Dashboard = () => {
 
   const [natural, setNatural] = useState('0');
   const [labgrown, setLabgrown] = useState('0');
-  
+  const backColor = "#42032C"
   var UserTotal = {
     month: User.month,
     total: User.total,
@@ -37,9 +37,6 @@ const Dashboard = () => {
     total: Order.total,
     current: Order.length != 0 ? Order.month[Order.month.length - 1] : 0,
     };
-
-
-
 
   const getDashboard = useCallback(async () => {
     try {
@@ -124,6 +121,7 @@ const Dashboard = () => {
       chart: {
         sparkline: {
           enabled: true,
+          colors: ["#000"],
         },
       },
       dataLabels: {
@@ -171,7 +169,8 @@ const Dashboard = () => {
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12} md={6} sm={6} lg={4}>
         <TotalLineChartCard
-          bgColor={theme.palette.common.black}
+          // bgColor={theme.palette.common.black}
+          bgColor="#5b2548"
           chartData={UserOption}
           title="Total User"
           footerData={[
@@ -188,17 +187,18 @@ const Dashboard = () => {
       </Grid>
       <Grid item xs={12} md={6} sm={6} lg={4}>
         <TotalLineChartCard
-          bgColor={theme.palette.common.black}
+            bgColor="#5b2548"
+          //  bgColor={theme.palette.common.black}
           chartData={OrderOption}
-          title="Total User"
+          title="Total Order"
           footerData={[
             {
               value: `${OrderTotal.total}`,
-              label: "Total User",
+              label: "Total Order",
             },
             {
               value: `${OrderTotal.current}`,
-              label: "Current Month User",
+              label: "Current Month Order",
             },
           ]}
         />

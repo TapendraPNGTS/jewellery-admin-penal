@@ -126,12 +126,12 @@ const [rowsPerPage, setRowsPerPage] = useState(10);
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>Sr No.</TableCell>
+                      <TableCell>Date</TableCell>
                       <TableCell>Minimum</TableCell>
                       <TableCell>Maximum </TableCell>
                       {/* <TableCell>Weight</TableCell> */}
                       <TableCell>Commission</TableCell>
-                      <TableCell>createdAt</TableCell>
-                      <TableCell>updatedAt</TableCell>
+                      {/* <TableCell>createdAt</TableCell> */}
                       <TableCell>Actions</TableCell>
                     </TableRow>
                   </TableHead>
@@ -155,11 +155,11 @@ const [rowsPerPage, setRowsPerPage] = useState(10);
                             key={index}
                           >
                             <TableCell align="start">{index + 1}</TableCell>
+                            <TableCell align="start">{row?.createdAt ? formatDate(row.createdAt) : "-"}</TableCell>
                             <TableCell align="start">{row?.min ? row.min : "-"}</TableCell>
                             <TableCell align="start">{row?.max ? row.max : '-'}</TableCell>
                             <TableCell align="start">{row?.commission ? row.commission : "-"}</TableCell>
-                            <TableCell align="start">{row?.createdAt ? formatDate(row.createdAt) : "-"}</TableCell>
-                            <TableCell align="start">{row?.updatedAt ? formatDate(row.updatedAt) : "-"}</TableCell>
+                            {/* <TableCell align="start">{row?.updatedAt ? formatDate(row.updatedAt) : "-"}</TableCell> */}
                             <TableCell>
                               <Link to={`/add-markups`}>
                                 <IconButton

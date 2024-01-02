@@ -40,7 +40,8 @@ const icons = {
     IconBooks
 };
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-    backgroundColor: theme.palette.secondary.dark,
+    // backgroundColor: theme.palette.secondary.dark,
+    backgroundColor: '#5b2548',
     color: '#fff',
     overflow: 'hidden',
     position: 'relative',
@@ -49,7 +50,8 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
         position: 'absolute',
         width: 210,
         height: 210,
-        background: theme.palette.secondary[800],
+        // background: theme.palette.secondary[800],
+        background: '#b75f98',
         borderRadius: '50%',
         top: -85,
         right: -95,
@@ -63,7 +65,8 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
         position: 'absolute',
         width: 210,
         height: 210,
-        background: theme.palette.secondary[800],
+        // background: theme.palette.secondary[800],
+        background: '#b75394',
         borderRadius: '50%',
         top: -125,
         right: -15,
@@ -96,7 +99,8 @@ const EarningCard = ({ isLoading, isCount ,isTitle}) => {
                                             sx={{
                                                 ...theme.typography.commonAvatar,
                                                 ...theme.typography.largeAvatar,
-                                                backgroundColor: theme.palette.secondary[800],
+                                                // backgroundColor: theme.palette.secondary[800],
+                                                backgroundColor: '#b75f98',
                                                 mt: 1
                                             }}
                                         >

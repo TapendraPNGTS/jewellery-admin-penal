@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+
 // material-ui
 import { useTheme } from "@mui/material/styles";
 import {
@@ -36,14 +37,18 @@ import { toast } from "react-hot-toast";
 
 const ProfileSection = () => {
   const theme = useTheme();
+  const params = useParams();
   const userApi = new UserApi();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const userId = useSelector((state) => state.user.v_user_info.staffId);
+  // const userId = useSelector((state) => state.user.v_user_info.staffId);
+  const userDetails = useSelector((state) => state.user.v_user_info);
+  // console.log(userDetails)
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
+
   const anchorRef = useRef(null);
 
   const handleClose = (event) => {
@@ -65,34 +70,36 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const isAuth = useAuthenticated();
+  // const [name, setName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const isAuth = useAuthenticated();
 
-  const getUserById = useCallback(async () => {
-    try {
-      if (!isAuth) {
-        navigate("/");
-      } else {
-        const userData = await userApi.getUserById({ userId });
-        if (!userData || !userData.data.data) {
-          return toast.error("No Data available");
-        } else {
-          setName(userData.data.data.name);
-          setEmail(userData.data.data.email);
-          return;
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong");
-      throw error;
-    }
-  });
+  // const getUserById = useCallback(async () => {
+  //   try {
+  //     if (!isAuth) {
+  //       navigate("/");
+  //     } else {
+  //       const userData = await userApi.getUserById({
+  //          userId: userId
+  //         });
+  //       if (!userData || !userData.data.data) {
+  //         return toast.error("No Data available");
+  //       } else {
+  //         setName(userData.data.data.name);
+  //         setEmail(userData.data.data.email);
+  //         return;
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Something went wrong");
+  //     throw error;
+  //   }
+  // });
 
-  useEffect(() => {
-    getUserById();
-  }, []);
+  // useEffect(() => {
+    // getUserById();
+  // }, []);
 
   return (
     <>
@@ -101,15 +108,20 @@ const ProfileSection = () => {
           height: "48px",
           alignItems: "center",
           borderRadius: "27px",
-          transition: "all .2s ease-in-out",
-          borderColor: theme.palette.primary.light,
-          backgroundColor: theme.palette.primary.light,
+          transition: "all .3s ease-in-out",
+          // borderColor: theme.palette.primary.light,
+          borderColor: '#daa5c7',
+          // backgroundColor: theme.palette.primary.light,
+          backgroundColor: '#eacde0',
           '&[aria-controls="menu-list-grow"], &:hover': {
-            borderColor: theme.palette.primary.main,
-            background: `${theme.palette.primary.main}!important`,
-            color: theme.palette.primary.light,
+            // borderColor: theme.palette.primary.main,
+            borderColor: '#742f5b',
+            background: `#742f5b !important`,
+            // color: theme.palette.primary.light,
+            color: '#742f5b',
             "& svg": {
-              stroke: theme.palette.primary.light,
+              // stroke: theme.palette.primary.light,
+              stroke: '#fff',
             },
           },
           "& .MuiChip-label": {
@@ -120,8 +132,10 @@ const ProfileSection = () => {
           <Avatar
             src={""}
             sx={{
-              ...theme.typography.mediumAvatar,
+              // ...theme.typography.mediumAvatar,
               margin: "8px 0 8px 8px !important",
+              color: "#742f5b",
+              bgcolor: "#be5f9c",
               cursor: "pointer",
             }}
             ref={anchorRef}
@@ -132,9 +146,10 @@ const ProfileSection = () => {
         }
         label={
           <IconSettings
+            color ="#742f5b"
             stroke={1.5}
             size="1.5rem"
-            color={theme.palette.primary.main}
+            // color={theme.palette.primary.main}
           />
         }
         variant="outlined"
@@ -182,11 +197,12 @@ const ProfileSection = () => {
                           variant="h4"
                           sx={{ fontWeight: 400 }}
                         >
-                          {name}
+                          {userDetails.name}
+                          {/* {userDetails.firstName} {userDetails.lastName} */}
                         </Typography>
                       </Stack>
                       <Typography variant="subtitle2">
-                        Email :- {email}
+                        Email :- {userDetails.email}
                       </Typography>
                     </Stack>
                     <Divider />

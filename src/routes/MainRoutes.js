@@ -68,6 +68,9 @@ const OrdersView = Loadable(
 const AllLeads = Loadable(
   lazy(() => import("views/utilities/Leads/leadsHistory"))
 );
+const LeadsDetails = Loadable(
+  lazy(() => import("views/utilities/Leads/leadsDetails"))
+);
 
 //User Route
 const User = Loadable(lazy(() => import("views/utilities/users/user")));
@@ -165,6 +168,10 @@ const MainRoutes = {
         {
           path: "/leads-history",
           element: <AllLeads />,
+        },
+        {
+          path: "/leads-details/:id",
+          element: <LeadsDetails />,
         },
       ],
     },

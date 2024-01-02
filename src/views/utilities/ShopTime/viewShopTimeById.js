@@ -25,7 +25,7 @@ function App() {
   const getAllUser = useCallback(async () => {
     try {
       const users = await shopTime.getShopById({
-        timeId: params.id,
+        userId: params.id,
       });
       if (!users || !users.data.data) {
         return toast.error("no latest data available");

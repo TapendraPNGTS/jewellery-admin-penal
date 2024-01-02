@@ -25,7 +25,7 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
     UserById: {
-      Endpoint: "user/getUserById",
+      Endpoint: "getUserById",
       Method: HttpMethod.Post,
     },
   },
@@ -60,12 +60,20 @@ const ApiRoutes = {
       Endpoint: "getAllNatural",
       Method: HttpMethod.Post,
     },
-    DaimondByIDNatural: {
+    NaturalDaimondById: {
       Endpoint: "getNaturalDetail",
       Method: HttpMethod.Post,
     },
-    DaimondByIDLabGrown: {
+    LabGrownDaimondById: {
       Endpoint: "getLabGrownDetail",
+      Method: HttpMethod.Post,
+    },
+    NaturalDaimondEdits: {
+      Endpoint: "editNatural",
+      Method: HttpMethod.Post,
+    },
+    LabGrownDaimondEdits: {
+      Endpoint: "editLabGrown",
       Method: HttpMethod.Post,
     },
   },
@@ -80,6 +88,10 @@ const ApiRoutes = {
     },
     AllLeads: {
       Endpoint: "getAllLead",
+      Method: HttpMethod.Post,
+    },
+    LeadsById: {
+      Endpoint: "getLeadById",
       Method: HttpMethod.Post,
     },
   },

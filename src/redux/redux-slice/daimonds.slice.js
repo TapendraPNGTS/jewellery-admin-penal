@@ -5,8 +5,8 @@ const initialState = {
     AllLabgrown: [],
     AllLabgrownById: [],
     AllNaturalById: [],
-    AllNaturalByIdEdit: [],
-    AllLabgrownByIdEdit:[],
+    // AllNaturalByIdEdit: [],
+    // AllLabgrownByIdEdit:[],
 };
 //internally using immer lib (can create mutable state)
 export const daimondsSlice = createSlice({
@@ -19,18 +19,18 @@ export const daimondsSlice = createSlice({
     NaturalById: (state, action) => {
       state.AllNaturalById = action.payload;
     },
-    NaturalByIdEdit: (state, action) => {
-      state.AllNaturalByIdEdit = action.payload;
-    },
     AllLabgrown: (state, action) => {
       state.AllLabgrown = action.payload;
     },
     LabgrownById: (state, action) => {
       state.AllLabgrownById = action.payload;
     },
-    LabgrownByIdEdit: (state, action) => {
-      state.AllLabgrownByIdEdit = action.payload;
-    },
+    // NaturalByIdEdit: (state, action) => {
+    //   state.AllNaturalByIdEdit = action.payload;
+    // },
+    // LabgrownByIdEdit: (state, action) => {
+    //   state.AllLabgrownByIdEdit = action.payload;
+    // },
   },
 });
 // this is for dispatch
